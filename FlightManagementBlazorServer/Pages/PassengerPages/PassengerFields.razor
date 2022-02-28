@@ -1,0 +1,39 @@
+﻿@inject SexService _sexService;
+
+@if (Sexes == null)
+{
+    <p>Loading...</p> 
+   }
+else
+{
+
+    <div class="passengerFields">
+        <label for="passengerName">Passenger Name</label>
+        <InputText id="passengerName" @bind-Value="@Passenger.Name" class="form-control"></InputText>
+
+        <label for="passengerSurname">Passenger Surame</label>
+        <InputText id="passengerSurame" @bind-Value="@Passenger.Surname" class="form-control"></InputText>
+      
+        <label for="Sexes">Sex</label>
+         <InputSelect id="Sexes" @bind-Value="Passenger.SexId" class="form-control">
+        <option value="">Select...</option>
+        @foreach(var sex in Sexes)
+        {
+            <option value="@sex.Id">@sex.Name</option>
+        }
+    </InputSelect>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Passenger Passenger { get; set; }
+
+    public List<Sex> Sexes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Sexes = await _sexService.GetSex();
+    }
+
+}

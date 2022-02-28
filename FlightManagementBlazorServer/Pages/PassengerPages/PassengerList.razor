@@ -1,0 +1,113 @@
+﻿@page "/PassengerList/{FlightId}"
+@inject PassengerService _passengerService;
+@inject NavigationManager _navigationManager;
+
+<h3>Passengers</h3>
+<button type="button" class="btn btn-success" @onclick="OpenAddPassengerPage">
+    <span class="oi oi-plus"></span>
+    Add Passenger
+</button>
+<button type="button" class="btn btn-primary" @onclick="OpenCheckedPassengerPage">
+    <span class="oi oi-plus"></span>
+    Check Passenger
+</button>
+<button type="button" class="btn btn-secondary" @onclick="Close">
+    <span class="oi oi-media-skip-backward"></span>
+    Close
+</button>
+
+@if (Passengers == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    <table class="table table-responsive">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Sex</th>
+                <th>FlightId</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var passenger in Passengers)
+            {
+                <tr>
+                    <td>@passenger.Name</td>
+                    <td>@passenger.Surname</td>
+                    <td>@passenger.Sex?.Name</td>
+                    <td>@passenger.FlightId</td>
+                    <td>
+                        <a href="/EditPassenger/@passenger.Id" class="btn btn-primary">
+                            <span class="oi oi-pencil"></span>
+                        </a>
+                        <button type="button" class="btn btn-danger" @onclick="() => DeletePassenger(passenger.FlightId)">
+                            <span class="oi oi-delete"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" @onclick="() => CheckPassenger(passenger.Id)">
+                            <span class="oi oi-plus"></span>
+                            Check Passenger
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    //< ConfirmationDialog @ref = "DeleteConfirmationDialog" ConfirmationChanged="@OnDeleteConfirmationSelected" Question = "Delete flight?" ></ ConfirmationDialog >
+}
+
+@code {
+    [Parameter]
+    public string FlightId { get; set; }
+
+    private List<Passenger> Passengers { get; set; }
+    public ConfirmationDialog DeleteConfirmationDialog { get; set; }
+    public int SelectedPassengerId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Passengers = await _passengerService.GetPassengers(int.Parse(FlightId));
+    }
+
+    private void OpenAddPassengerPage()
+    {
+        _navigationManager.NavigateTo($"/AddPassenger/{FlightId}");
+    }
+
+    private void OpenCheckedPassengerPage()
+    {
+        _navigationManager.NavigateTo($"/CheckedPassenger/{FlightId}");
+    }
+
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+
+    private async Task DeletePassenger(int passengerId)
+    {
+        // SelectedPassengerId = passengerId;
+        // DeleteConfirmationDialog.Show();
+        await _passengerService.DeletePassenger(passengerId);
+        Passengers = await _passengerService.GetPassengers(int.Parse(FlightId));
+    }
+    private async Task OnDeleteConfirmationSelected(bool isDeleteConfirmed)
+    {
+        if (isDeleteConfirmed)
+        {
+            await _passengerService.DeletePassenger(SelectedPassengerId);
+            Passengers = await _passengerService.GetPassengers(int.Parse(FlightId));
+        }
+    }
+
+    private async Task CheckPassenger(int passengerId)
+    {
+        await _passengerService.CheckPassenger(passengerId);
+        Passengers = await _passengerService.GetPassengers(int.Parse(FlightId));
+    }
+
+}
