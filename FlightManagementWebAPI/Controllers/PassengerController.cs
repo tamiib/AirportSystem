@@ -21,7 +21,7 @@ namespace FlightManagementWebAPI.Controllers
         {
             try
             {
-                var passengers = _passengerRepository.GetPassengers(flightId);
+                var passengers = _passengerRepository.GetPassengers(flightId,false);
                 return Ok(passengers);
             }catch(System.Exception)
             {
@@ -88,12 +88,12 @@ namespace FlightManagementWebAPI.Controllers
             }
         }
 
-        [HttpGet("checkedPassengers")]
-        public IActionResult GetCheckedPassengers()
+        [HttpGet("checkedPassengers/{flightId:int}")]
+        public IActionResult GetCheckedPassengers(int flightId)
         {
             try
             {
-                return Ok(_passengerRepository.GetCheckedPassengers(true));
+                return Ok(_passengerRepository.GetCheckedPassengers(flightId));
             }
             catch (System.Exception)
             {
@@ -101,7 +101,7 @@ namespace FlightManagementWebAPI.Controllers
             }
         }
 
-        [HttpPut("checkedPassengers/{passengerId:int}")]
+        [HttpPut("checkPassenger/{passengerId:int}")]
         public IActionResult CheckPassenger(int passengerId)
         {
             try

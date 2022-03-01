@@ -2,6 +2,7 @@
 using DomainModel.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightManagementWebAPI.Repositories
 {
@@ -14,9 +15,9 @@ namespace FlightManagementWebAPI.Repositories
             _airportSystemContext = airportSystemContext;
         }
 
-        public IEnumerable<Passenger> GetPassengers(int flightId)
+        public IEnumerable<Passenger> GetPassengers(int flightId,bool check)
         {
-            return _airportSystemContext.Passengers.Where(Passenger => Passenger.FlightId== flightId).ToList();
+            return _airportSystemContext.Passengers.Include(passenger => passenger.Sex).Where(Passenger => Passenger.FlightId== flightId).Where(Passenger=> Passenger.IsChecked==check).ToList();
         }
 
         public void InsertPassenger(Passenger passenger)
@@ -26,7 +27,7 @@ namespace FlightManagementWebAPI.Repositories
         }
         public Passenger GetPassenger(int passengerId)
         {
-            return _airportSystemContext.Passengers.FirstOrDefault(passenger => passenger.Id == passengerId);
+            return _airportSystemContext.Passengers.Include(passenger => passenger.Sex).FirstOrDefault(passenger => passenger.Id == passengerId);
         }
         public void UpdatePassenger(Passenger passenger)
         {
@@ -35,7 +36,7 @@ namespace FlightManagementWebAPI.Repositories
             {
                 passengerForUpdate.Name = passenger.Name;
                 passengerForUpdate.Surname = passenger.Surname;
-                passengerForUpdate.Sex = passenger.Sex;
+                passengerForUpdate.Sex.Id = passenger.Sex.Id;
                 passengerForUpdate.FlightId = passenger.FlightId;
 
                 _airportSystemContext.SaveChanges();
@@ -61,9 +62,9 @@ namespace FlightManagementWebAPI.Repositories
             }
         }
 
-        public List<Passenger> GetCheckedPassengers(bool Checked)
+        public List<Passenger> GetCheckedPassengers(int flightId)
         {
-            return _airportSystemContext.Passengers.Where(passenger => passenger.IsChecked == Checked).ToList();
+            return _airportSystemContext.Passengers.Include(passenger => passenger.Sex).Where(Passenger => Passenger.FlightId == flightId).Where(passenger => passenger.IsChecked == true).ToList();
         }
     }
 }

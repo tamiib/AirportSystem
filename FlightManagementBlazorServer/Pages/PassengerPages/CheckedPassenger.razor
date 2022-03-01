@@ -1,4 +1,4 @@
-﻿@page "/CheckedPassenger/{FlightId}"
+﻿@page "/CheckedPassengers/{FlightId}"
 @inject PassengerService _passengerService;
 
 <h3>Checked Passenger</h3>
@@ -41,6 +41,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        Passengers = await _passengerService.GetCheckedPassengers();
+        Passengers = await _passengerService.GetCheckedPassengers(int.Parse(FlightId));
     }
 }

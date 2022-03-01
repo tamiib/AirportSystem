@@ -10,7 +10,7 @@
 }
 else
 {
-    <EditForm Model="@Passenger"  OnValidSubmit="@UpdateFlightAsync">
+    <EditForm Model="@Passenger"  OnValidSubmit="@UpdatePassengerAsync">
         <PassengerFields Passenger="@Passenger"></PassengerFields>
         <button type="submit" class="btn btn-success">
             <span class="oi-pencil"></span>
@@ -39,7 +39,7 @@ else
         _navigationManager.NavigateTo($"/PassengerList/{Passenger.FlightId}");
     }
 
-    private async Task UpdateFlightAsync()
+    private async Task UpdatePassengerAsync()
     {
         await _passengerService.UpdatePassenger(Passenger);
         Close();
