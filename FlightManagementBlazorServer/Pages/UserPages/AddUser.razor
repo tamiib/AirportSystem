@@ -1,0 +1,92 @@
+﻿@page "/AddUser"
+@using System.Text;
+@inject UserService _userService;
+@inject NavigationManager _navigationManager;
+
+<h3>Add User</h3>
+
+<div class="carrierFields card">
+    <div class="container">
+        <EditForm Model="@User" OnValidSubmit="@AddUserAsync">
+            <UserField User="@User"></UserField>
+            <button type="submit" class="btn btn-success">
+                <span class="oi oi-pencil"></span>
+                Add User
+            </button>
+            <button type="button" class="btn btn-danger" @onclick="Close">
+                <span class="oi oi-x"></span>
+                Close
+            </button>
+        </EditForm>
+    </div>
+</div>
+<NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>
+
+@code {
+    public User User { get; set; }
+    public List<User> users;
+    public NotificationDialog NotificationDialog { get; set; }
+    public List<ValidationError> ValidationErrors { get; set; }
+    public String ConcatenatedValidationErrors { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = new User();
+    }
+
+    private async Task AddUserAsync()
+    {
+
+        users = await _userService.GetUsersAsync();
+
+        ValidationErrors = ValidateUser();
+
+        if (ValidationErrors.Any())
+        {
+            ConcatenatedValidationErrors = GetConcatenatedValidationErrors(ValidationErrors);
+            NotificationDialog.Show();
+        }
+        else
+        {
+
+            await _userService.AddUserAsync(User);
+            Close();
+        }
+    }
+
+    private List<ValidationError> ValidateUser()
+    {
+        var validationErrors = new List<ValidationError>();
+        if (String.IsNullOrWhiteSpace(User.Username))
+            validationErrors.Add(new ValidationError { Description = "Please insert Username!" });
+
+        if (String.IsNullOrWhiteSpace(User.Password))
+            validationErrors.Add(new ValidationError { Description = "Please insert Password!" });
+
+        if (User.Username != null && User.Password != null && users.Exists(s => s.Username == User.Username))
+            validationErrors.Add(new ValidationError { Description = "Username exist!" });
+
+        if (User.Role == "Other")
+            validationErrors.Add(new ValidationError { Description = "Must choose role!" });
+
+        return validationErrors;
+    }
+
+    private string GetConcatenatedValidationErrors(List<ValidationError> ValidationErrors)
+    {
+        StringBuilder message = new StringBuilder();
+        foreach (var error in ValidationErrors)
+        {
+            if (message.Length == 0)
+                message.Append(error.Description);
+            else
+                message.Append($"{Environment.NewLine} {error.Description}");
+        }
+        return message.ToString();
+    }
+
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/flightList");
+    }
+}

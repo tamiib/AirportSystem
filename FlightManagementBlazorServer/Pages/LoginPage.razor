@@ -1,0 +1,97 @@
+﻿@page "/"
+@using System.Text;
+@inject NavigationManager _navigationManager;
+@inject UserService _userService;
+
+    <h3>Login Page</h3>
+    <div class="wrapper">
+      <div id="formContent">
+        <EditForm Model="@User" OnValidSubmit="@GetUsersAsync">
+            <LoginPageField User="@User"></LoginPageField>
+            <button type="submit" class="btn btn-primary">
+                Login
+            </button>
+        </EditForm>
+      </div>
+    </div>
+
+<NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>
+
+
+@code {
+    public User User { get; set; }
+    public NotificationDialog NotificationDialog{ get; set; }
+    public List<ValidationError> ValidationErrors{ get; set; }
+    public String ConcatenatedValidationErrors{ get; set; }
+
+    public List<User> user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = new User();
+    }
+
+    private async Task GetUsersAsync()
+    {
+        user = await _userService.GetUsersAsync();
+
+        foreach(var tempUser in user)
+        {
+            if(tempUser.Username == User.Username && tempUser.Password == User.Password)
+            {
+                CurrentUser.Username = tempUser.Username;
+                CurrentUser.Role = tempUser.Role;
+                Close();
+                break;
+            }
+            else
+            {
+                ValidationErrors = ValidateLogin(tempUser.Password, tempUser.Username);
+                if(ValidationErrors.Any())
+                {
+                    ConcatenatedValidationErrors = GetConcatenatedValidationErrors(ValidationErrors);
+                    NotificationDialog.Show();
+                }
+            }
+        }
+    }
+
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/flightList");
+
+    }
+
+    private List<ValidationError> ValidateLogin(string username,string password)
+    {
+        var validationErrors = new List<ValidationError>();
+        if (String.IsNullOrWhiteSpace(User.Username))
+            validationErrors.Add(new ValidationError { Description = "Please insert Username!"});
+
+        if (String.IsNullOrWhiteSpace(User.Password))
+            validationErrors.Add(new ValidationError { Description = "Please insert Password!"});
+
+        if (!user.Any(s => s.Username == User.Username) && User.Username != null)
+            validationErrors.Add(new ValidationError { Description = "User does not exist!"});
+
+        if (user.Any(s => s.Username == User.Username && User.Password != s.Password) && User.Password!=null)
+            validationErrors.Add(new ValidationError { Description = "Invalide Password!"});
+
+
+        return validationErrors;
+    }
+
+    private string GetConcatenatedValidationErrors(List<ValidationError> ValidationErrors)
+    {
+        StringBuilder message = new StringBuilder();
+        foreach(var error in ValidationErrors)
+        {
+            if (message.Length == 0)
+                message.Append(error.Description);
+            else
+                message.Append($"{Environment.NewLine} {error.Description}");
+
+        }
+        return message.ToString();
+    }
+}

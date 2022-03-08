@@ -1,14 +1,18 @@
-﻿@page "/"
+﻿@page "/flightList"
 @inject FlightService _flightService;
 @inject NavigationManager _navigationManager;
 
 
 <h3>Flights</h3>
-<button type="button" class="btn btn-success" @onclick="OpenAddFlightPage">
-    <span class="oi oi-plus"></span>
-    Add Flight
-</button>
-@if(Flights == null)
+@if (CurrentUser.Role == "Admin")
+{
+    <button type="button" class="btn btn-success" @onclick="OpenAddFlightPage">
+        <span class="oi oi-plus"></span>
+        Add Flight
+    </button>
+}
+
+@if (Flights == null)
 {
     <div>Loading...</div>
 }
@@ -25,7 +29,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach(var flight in Flights)
+            @foreach (var flight in Flights)
             {
                 <tr>
                     <td>@flight.Number</td>
@@ -34,22 +38,25 @@ else
                     <td>@flight.Carrier?.Name</td>
                     <td>@flight.AirportTo</td>
                     <td>
-                        <a href="/EditFlight/@flight.Id" class="btn btn-primary">
-                            <span class="oi oi-pencil"></span>    
-                        </a>
+                        @if (CurrentUser.Role == "Admin")
+                        {
+                            <a href="/EditFlight/@flight.Id" class="btn btn-primary">
+                                <span class="oi oi-pencil"></span>
+                            </a>
                         <button type="button" class="btn btn-danger" @onclick="() => DeleteFlight(flight.Id)">
                             <span class="oi oi-delete"></span>
                         </button>
                         <button type="button" class="btn btn-secondary" @onclick="() => ArchiveFlight(flight.Id)">
                             <span class="oi oi-transfer"></span>
                         </button>
+                        }
                         <a href="/PassengerList/@flight.Id" class="btn btn-success">
-                            <span class="oi oi-pencil"></span>    
+                            <span class="oi oi-pencil"></span>
                         </a>
                     </td>
                 </tr>
             }
-            
+
         </tbody>
     </table>
 
@@ -60,9 +67,9 @@ else
 
 @code {
     private List<Flight> Flights;
-    public ConfirmationDialog DeleteConfirmationDialog{ get; set; }
-    public ConfirmationDialog ArchiveConfirmationDialog{ get; set; }
-    public int SelectedFlightId{ get; set; }
+    public ConfirmationDialog DeleteConfirmationDialog { get; set; }
+    public ConfirmationDialog ArchiveConfirmationDialog { get; set; }
+    public int SelectedFlightId { get; set; }
     protected override async Task OnInitializedAsync()
     {
         Flights = await _flightService.GetFlights();
@@ -81,7 +88,7 @@ else
 
     private async Task OnDeleteConfirmationSelected(bool isDeleteConfirmed)
     {
-        if(isDeleteConfirmed)
+        if (isDeleteConfirmed)
         {
             await _flightService.DeleteFlight(SelectedFlightId);
             Flights = await _flightService.GetFlights();
@@ -90,7 +97,7 @@ else
 
     private async Task OnArchiveConfirmationSelected(bool isArchiveConfirmed)
     {
-        if(isArchiveConfirmed)
+        if (isArchiveConfirmed)
         {
             await _flightService.ArchiveFlight(SelectedFlightId);
             Flights = await _flightService.GetFlights();

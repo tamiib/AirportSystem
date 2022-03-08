@@ -1,0 +1,16 @@
+﻿@using DomainModel.Models
+
+<div class="loginFields">
+    <label for="loginUsername">Username</label>
+    <InputText id="loginUsername" @bind-Value="@User.Username" class="form-control"></InputText>
+
+    <label for="loginPassword">Password</label>
+    <InputText id="loginPassword" @bind-Value="@User.Password" class="form-control two" type="password"></InputText>
+
+</div>
+
+@code {
+    [Parameter]
+    public User User { get; set; }
+
+}

@@ -16,5 +16,6 @@ namespace FlightManagementWebAPI.DatabaseContext
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<Passenger> Passengers { get; set; }
         public DbSet<Sex> Sexes { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

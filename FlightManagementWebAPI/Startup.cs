@@ -40,6 +40,7 @@ namespace FlightManagementWebAPI
             services.AddScoped<CarrierRepository>();
             services.AddScoped<PassengerRepository>();
             services.AddScoped<SexRepository>();
+            services.AddScoped<UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

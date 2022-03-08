@@ -3,10 +3,13 @@
 @inject NavigationManager _navigationManager;
 
 <h3>Passengers</h3>
-<button type="button" class="btn btn-success" @onclick="OpenAddPassengerPage">
-    <span class="oi oi-plus"></span>
-    Add Passenger
-</button>
+@if (CurrentUser.Role == "Admin")
+{
+    <button type="button" class="btn btn-success" @onclick="OpenAddPassengerPage">
+        <span class="oi oi-plus"></span>
+        Add Passenger
+    </button>
+}
 <button type="button" class="btn btn-primary" @onclick="OpenCheckedPassengerPage">
     Checked Passenger
 </button>
@@ -42,9 +45,12 @@ else
                         <a href="/EditPassenger/@passenger.Id" class="btn btn-primary">
                             <span class="oi oi-pencil"></span>
                         </a>
-                        <button type="button" class="btn btn-danger" @onclick="() => DeletePassenger(passenger.Id)">
-                            <span class="oi oi-delete"></span>
-                        </button>
+                        @if (CurrentUser.Role == "Admin")
+                        {
+                            <button type="button" class="btn btn-danger" @onclick="() => DeletePassenger(passenger.Id)">
+                                <span class="oi oi-delete"></span>
+                            </button>
+                        }
                         <button type="button" class="btn btn-primary" @onclick="() => CheckPassenger(passenger.Id)">
                             <span class="oi oi-plus"></span>
                             Check Passenger
@@ -56,7 +62,7 @@ else
         </tbody>
     </table>
 }
-    <ConfirmationDialog @ref = "DeleteConfirmationDialog" ConfirmationChanged="@OnDeleteConfirmationSelected" Question = "Delete passenger?" ></ConfirmationDialog>
+<ConfirmationDialog @ref="DeleteConfirmationDialog" ConfirmationChanged="@OnDeleteConfirmationSelected" Question="Delete passenger?"></ConfirmationDialog>
 
 @code {
     [Parameter]
@@ -88,9 +94,9 @@ else
 
     private async Task DeletePassenger(int passengerId)
     {
-         SelectedPassengerId = passengerId;
-         DeleteConfirmationDialog.Show();
-       
+        SelectedPassengerId = passengerId;
+        DeleteConfirmationDialog.Show();
+
     }
     private async Task OnDeleteConfirmationSelected(bool isDeleteConfirmed)
     {
