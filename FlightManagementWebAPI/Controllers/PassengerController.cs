@@ -101,12 +101,12 @@ namespace FlightManagementWebAPI.Controllers
             }
         }
 
-        [HttpPut("checkPassenger/{passengerId:int}")]
-        public IActionResult CheckPassenger(int passengerId)
+        [HttpPut("checkPassenger")]
+        public IActionResult CheckPassenger([FromBody]Passenger passenger)
         {
             try
             {
-                _passengerRepository.CheckPassenger(passengerId);
+                _passengerRepository.CheckPassenger(passenger);
                 return Ok();
             }
             catch (System.Exception)

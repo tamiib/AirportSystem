@@ -10,6 +10,9 @@
         <span class="oi oi-plus"></span>
         Add Flight
     </button>
+    <button  type="button" class="btn btn-danger" @onclick="OpenAddUserPage">
+        <span class="oi oi-pencil">Add User</span>
+    </button>
 }
 
 @if (Flights == null)
@@ -43,15 +46,15 @@ else
                             <a href="/EditFlight/@flight.Id" class="btn btn-primary">
                                 <span class="oi oi-pencil"></span>
                             </a>
-                        <button type="button" class="btn btn-danger" @onclick="() => DeleteFlight(flight.Id)">
-                            <span class="oi oi-delete"></span>
-                        </button>
-                        <button type="button" class="btn btn-secondary" @onclick="() => ArchiveFlight(flight.Id)">
-                            <span class="oi oi-transfer"></span>
-                        </button>
+                            <button type="button" class="btn btn-danger" @onclick="() => DeleteFlight(flight.Id)">
+                                <span class="oi oi-delete"></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" @onclick="() => ArchiveFlight(flight.Id)">
+                                <span class="oi oi-transfer"></span>
+                            </button>
                         }
                         <a href="/PassengerList/@flight.Id" class="btn btn-success">
-                            <span class="oi oi-pencil"></span>
+                            <span class="oi oi-pencil"> Passengers</span>
                         </a>
                     </td>
                 </tr>
@@ -78,6 +81,11 @@ else
     private void OpenAddFlightPage()
     {
         _navigationManager.NavigateTo("/AddFlight");
+    }
+
+    private void OpenAddUserPage()
+    {
+        _navigationManager.NavigateTo("/AddUser");
     }
 
     private async Task DeleteFlight(int flightId)

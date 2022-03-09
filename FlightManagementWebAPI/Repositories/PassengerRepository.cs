@@ -52,12 +52,13 @@ namespace FlightManagementWebAPI.Repositories
             }
         }
 
-        public void CheckPassenger(int passengerId)
+        public void CheckPassenger(Passenger passenger)
         {
-            var passenger = GetPassenger(passengerId);
-            if (passenger != null)
+            var passengerToCheck = GetPassenger(passenger.Id);
+            if (passengerToCheck != null)
             {
-                passenger.IsChecked = true;
+                passengerToCheck.IsChecked = true;
+                passengerToCheck.Seat = passenger.Seat;
                 _airportSystemContext.SaveChanges();
             }
         }

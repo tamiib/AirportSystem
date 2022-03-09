@@ -1,0 +1,20 @@
+﻿
+
+@if (Passenger == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="checkInField">
+        <label for="passengerSeat">Passenger Seat</label>
+        <InputText id="passengerSeat" @bind-Value="@Passenger.Seat" class="form-control"></InputText>
+    </div>
+}
+
+
+    @code {
+        [Parameter]
+        public Passenger Passenger { get; set; }
+
+    }

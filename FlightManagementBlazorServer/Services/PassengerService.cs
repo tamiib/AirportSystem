@@ -48,9 +48,9 @@ namespace FlightManagementBlazorServer.Services
             return await _httpClient.GetFromJsonAsync<List<Passenger>>($"{BaseApiUrl}/checkedPassengers/{flightId}");
         }
 
-        public async Task CheckPassenger(int passengerId)
+        public async Task CheckPassenger(Passenger passenger)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"{BaseApiUrl}/checkPassenger/{passengerId}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"{BaseApiUrl}/checkPassenger");
             await _httpClient.SendAsync(httpRequest);
         }
     }

@@ -17,8 +17,7 @@ namespace DomainModel.Models
         public enum UserRole
         {
             Admin,
-            CheckIn,
-            Choose
+            CheckIn
         }
 
     }

@@ -5,8 +5,7 @@
 
 <h3>Add User</h3>
 
-<div class="carrierFields card">
-    <div class="container">
+
         <EditForm Model="@User" OnValidSubmit="@AddUserAsync">
             <UserField User="@User"></UserField>
             <button type="submit" class="btn btn-success">
@@ -18,8 +17,7 @@
                 Close
             </button>
         </EditForm>
-    </div>
-</div>
+
 <NotificationDialog @ref="NotificationDialog" Description="@ConcatenatedValidationErrors"></NotificationDialog>
 
 @code {

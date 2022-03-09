@@ -1,0 +1,46 @@
+﻿@page "/CheckInPassenger/{PassengerId}"
+@inject PassengerService _passengerService;
+@inject NavigationManager _navigationManager;
+@using DomainModel
+@using System.Text
+
+
+<h3>CkechIn Passenger</h3>
+
+
+<EditForm Model="@Passenger" OnValidSubmit="@CheckInPassengerAsync">
+    <CheckInField Passenger="@Passenger"></CheckInField>
+
+    <button type="button" class="btn btn-secondary" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+        Close
+    </button>
+</EditForm>
+
+@code
+{
+    [Parameter]
+    public string PassengerId { get; set; }
+    public Passenger Passenger { get; set; }
+    public int FlightId { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Passenger = await _passengerService.GetPassengerAsync(int.Parse(PassengerId));
+        FlightId = Passenger.FlightId;
+    }
+
+    private void Close()
+    {
+        _navigationManager.NavigateTo($"/CheckedPassengers/{FlightId.ToString()}");
+    }
+
+    private async Task CheckInPassengerAsync()
+    {
+         await _passengerService.CheckPassenger(Passenger);
+        Close();
+
+    }
+
+}

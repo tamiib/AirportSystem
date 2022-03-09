@@ -1,5 +1,22 @@
-﻿<h3>UserField</h3>
+﻿<div class="loginFields">
+    <label for="loginUsername">Username</label>
+    <InputText id="loginUsername" @bind-Value="@User.Username" class="form-control"></InputText>
+
+    <label for="loginPassword">Password</label>
+    <InputText id="loginPassword" @bind-Value="@User.Password" class="form-control" type="password"></InputText>
+
+    <label for="loginRole">Role</label>
+    <InputSelect @bind-Value="@User.Role" class="form-control">
+        @foreach (var role in Enum.GetValues(typeof(User.UserRole)))
+        {
+            <option value="@role">@role</option>
+        }
+    </InputSelect>
+</div>
 
 @code {
+    [Parameter]
+    public User User { get; set; }
+
 
 }

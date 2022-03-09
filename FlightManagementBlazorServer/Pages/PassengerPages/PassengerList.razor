@@ -51,10 +51,9 @@ else
                                 <span class="oi oi-delete"></span>
                             </button>
                         }
-                        <button type="button" class="btn btn-primary" @onclick="() => CheckPassenger(passenger.Id)">
-                            <span class="oi oi-plus"></span>
-                            Check Passenger
-                        </button>
+                         <a href="/CheckInPassenger/@passenger.Id" class="btn btn-success">
+                            <span class="oi oi-pencil"> CheckIn</span>
+                        </a>
                     </td>
 
                 </tr>
@@ -109,8 +108,8 @@ else
 
     private async Task CheckPassenger(int passengerId)
     {
-        await _passengerService.CheckPassenger(passengerId);
-        Passengers = await _passengerService.GetPassengers(int.Parse(FlightId));
+        _navigationManager.NavigateTo($"/CheckInPassenger/{passengerId.ToString()}");
+
     }
 
 }
