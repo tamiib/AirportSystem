@@ -51,6 +51,7 @@ namespace FlightManagementBlazorServer.Services
         public async Task CheckPassenger(Passenger passenger)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"{BaseApiUrl}/checkPassenger");
+            httpRequest.Content = new StringContent(JsonSerializer.Serialize(passenger), Encoding.UTF8, "application/json");
             await _httpClient.SendAsync(httpRequest);
         }
     }

@@ -7,15 +7,27 @@
 
 <h3>CkechIn Passenger</h3>
 
-
-<EditForm Model="@Passenger" OnValidSubmit="@CheckInPassengerAsync">
-    <CheckInField Passenger="@Passenger"></CheckInField>
-
+@if(Passenger == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <EditForm Model="@Passenger" OnValidSubmit="@CheckInPassengerAsync">
+        <CheckInField Passenger="@Passenger"></CheckInField>
+    
+    <button type="submit" class="btn btn-success">
+            <span class="oi-pencil"></span>
+            Check In
+        </button>
     <button type="button" class="btn btn-secondary" @onclick="Close">
         <span class="oi oi-media-skip-backward"></span>
         Close
     </button>
 </EditForm>
+}
+
+
 
 @code
 {
